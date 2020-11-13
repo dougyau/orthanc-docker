@@ -1,0 +1,6 @@
+{
+  "Worklists" : {
+    "Enable": false,
+    "Database": "/var/lib/orthanc/worklists"
+  }
+}

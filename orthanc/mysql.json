@@ -1,0 +1,13 @@
+{
+  "MySQL": {
+    "EnableIndex": false,
+    "EnableStorage": false,
+    "Host": "localhost",
+    "Port": 3306,
+    "Database": "orthanc_db",
+    "Username": "orthanc_user",
+    "UnixSocket": "/var/run/mysqld/mysqld.sock",
+    "Password": "my_password",
+    "Lock": false
+  }
+}

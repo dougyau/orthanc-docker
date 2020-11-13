@@ -34,6 +34,14 @@ RUN curl -L https://github.com/radpointhq/orthanc-s3-storage/archive/master.tar.
     && cmake --build . -- -j6 \
     && cmake --build . --target install
 
+RUN apt-get -y --no-install-recommends install python3-pip \
+    && python -m pip install supervisor setuptools
+
 RUN rm -rf /app/* \
     && apt-get -y remove build-essential cmake libcurl4-openssl-dev libssl-dev zlib1g-dev git \
     && apt-get -y autoremove
+
+ADD . /app
+ADD supervisord.conf /etc/supervisord.conf
+
+CMD ["/app/entrypoint.sh"]
