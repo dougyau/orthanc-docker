@@ -43,5 +43,6 @@ RUN rm -rf /app/* \
 
 ADD . /app
 ADD supervisord.conf /etc/supervisord.conf
+RUN chmod +x /app/entrypoint.sh
 
 CMD ["/app/entrypoint.sh"]
