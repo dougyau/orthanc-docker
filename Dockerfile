@@ -1,7 +1,7 @@
 FROM debian:stable-slim
 
 RUN apt-get update \
-    && apt-get -y --no-install-recommends install ca-certificates python3 curl unzip git \
+    && apt-get -y --no-install-recommends install ca-certificates python3 curl unzip git nginx-full \
                   orthanc orthanc-dicomweb orthanc-mysql orthanc-webviewer \
                   build-essential cmake libcurl4-openssl-dev libssl-dev zlib1g-dev \
     && ln -s /usr/bin/python3 /usr/bin/python \
@@ -39,10 +39,16 @@ RUN apt-get -y --no-install-recommends install python3-pip \
 
 RUN rm -rf /app/* \
     && apt-get -y remove build-essential cmake libcurl4-openssl-dev libssl-dev zlib1g-dev git \
-    && apt-get -y autoremove
+    && apt-get -y autoremove \
+    && rm /etc/nginx/* \
+    && rm /etc/nginx.conf
 
 ADD . /app
 ADD supervisord.conf /etc/supervisord.conf
+ADD nginx/orthanc /etc/nginx/sites-enabled
+ADD nginx/nginx.conf /etc/nginx.conf
 RUN chmod +x /app/entrypoint.sh
+RUN ln -sf /dev/stdout /var/log/nginx/access.log \
+    && ln -sf /dev/stderr /var/log/nginx/error.log
 
 CMD ["/app/entrypoint.sh"]
