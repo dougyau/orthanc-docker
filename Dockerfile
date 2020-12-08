@@ -40,13 +40,13 @@ RUN apt-get -y --no-install-recommends install python3-pip \
 RUN rm -rf /app/* \
     && apt-get -y remove build-essential cmake libcurl4-openssl-dev libssl-dev zlib1g-dev git \
     && apt-get -y autoremove \
-    && rm /etc/nginx/* \
-    && rm /etc/nginx.conf
+    && rm /etc/nginx/sites-enabled/* \
+    && rm /etc/nginx/nginx.conf
 
 ADD . /app
 ADD supervisord.conf /etc/supervisord.conf
 ADD nginx/orthanc /etc/nginx/sites-enabled
-ADD nginx/nginx.conf /etc/nginx.conf
+ADD nginx/nginx.conf /etc/nginx/nginx.conf
 RUN chmod +x /app/entrypoint.sh
 RUN ln -sf /dev/stdout /var/log/nginx/access.log \
     && ln -sf /dev/stderr /var/log/nginx/error.log
