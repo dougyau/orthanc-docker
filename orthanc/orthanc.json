@@ -10,7 +10,7 @@
   "Plugins" : [
     "/usr/share/orthanc/plugins/"
   ],
-  "ConcurrentJobs" : 2,
+  "ConcurrentJobs" : 1,
   "HttpServerEnabled" : true,
   "HttpPort" : 8042,
   "HttpDescribeErrors" : true,

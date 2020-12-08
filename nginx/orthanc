@@ -3,7 +3,7 @@ server {
 
         server_name _;
 
-        add_header Access-Control-Allow-Origin *;
+        add_header Access-Control-Allow-Origin * always;
 
         # location /dicom-server {
         #         include proxy_params;

@@ -1,4 +1,4 @@
-FROM debian:stable-slim
+FROM debian:testing-slim
 
 RUN apt-get update \
     && apt-get -y --no-install-recommends install ca-certificates python3 curl unzip git nginx-full \
