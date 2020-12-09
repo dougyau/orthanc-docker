@@ -2,7 +2,7 @@ FROM debian:testing-slim
 
 RUN apt-get update \
     && apt-get -y --no-install-recommends install ca-certificates python3 curl unzip git nginx-full \
-                  orthanc orthanc-dicomweb orthanc-mysql orthanc-webviewer procps \
+                  orthanc orthanc-dicomweb orthanc-mysql orthanc-webviewer orthanc-gdcm procps \
                   build-essential cmake libcurl4-openssl-dev libssl-dev zlib1g-dev \
     && ln -s /usr/bin/python3 /usr/bin/python \
     && mkdir /app
