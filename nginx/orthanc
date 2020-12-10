@@ -1,13 +1,12 @@
+proxy_cache_path /tmp/nginx keys_zone=auth_cache:10m;
 server {
         listen 80 default_server;
-
-        server_name _;
 
         location / {
              if ($request_method = 'OPTIONS') {
                 add_header 'Access-Control-Allow-Origin' '*';
                 add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
-                add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Accept';
+                add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Accept,X-Dicomserver-Auth';
                 add_header 'Access-Control-Max-Age' 1728000;
                 add_header 'Content-Type' 'text/plain; charset=utf-8';
                 add_header 'Content-Length' 0;
@@ -17,18 +16,31 @@ server {
              if ($request_method = 'POST') {
                 add_header 'Access-Control-Allow-Origin' '*' always;
                 add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS' always;
-                add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Accept' always;
+                add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Accept,X-Dicomserver-Auth' always;
                 add_header 'Access-Control-Expose-Headers' 'Content-Length,Content-Range' always;
              }
 
              if ($request_method = 'GET') {
                 add_header 'Access-Control-Allow-Origin' '*' always;
                 add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS' always;
-                add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Accept' always;
+                add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Accept,X-Dicomserver-Auth' always;
                 add_header 'Access-Control-Expose-Headers' 'Content-Length,Content-Range' always;
              }
 
+            auth_request /auth;
             include proxy_params;
             proxy_pass http://127.0.0.1:8042;
+        }
+
+        location = /auth {
+            internal;
+            proxy_pass $$AUTH_URL$$;
+            proxy_pass_request_body off;
+            proxy_set_header Content-Length "";
+            proxy_set_header X-Original-URI $request_uri;
+            proxy_set_header X-Auth-Token $http_x_auth_token;
+            proxy_cache auth_cache;
+            proxy_cache_key "$http_x_dicomserver_auth$request_uri";
+            proxy_cache_valid 200 401 10m;
         }
 }
