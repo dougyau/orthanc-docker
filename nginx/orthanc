@@ -1,6 +1,16 @@
 proxy_cache_path /tmp/nginx keys_zone=auth_cache:10m;
+
+upstream orthanc {
+    server 127.0.0.1:8042;
+    keepalive 64;
+}
+
 server {
         listen 80 default_server;
+
+        location /health {
+            return 200;
+        }
 
         location / {
              if ($request_method = 'OPTIONS') {
@@ -29,7 +39,9 @@ server {
 
             auth_request /auth;
             include proxy_params;
-            proxy_pass http://127.0.0.1:8042;
+            proxy_pass http://orthanc;
+            proxy_set_header Connection "";
+            proxy_http_version 1.1;
         }
 
         location = /auth {
@@ -41,6 +53,6 @@ server {
             proxy_set_header X-Auth-Token $http_x_auth_token;
             proxy_cache auth_cache;
             proxy_cache_key "$http_x_auth_token$request_uri";
-            proxy_cache_valid 200 401 10m;
+            proxy_cache_valid 200 401 2m;
         }
 }
